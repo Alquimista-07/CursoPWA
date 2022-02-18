@@ -15,4 +15,4 @@ fetch('no-encontrado.html')
     .catch(error => {
         console.log('Error en la petición');
         console.log(error);
-    })
+    });
