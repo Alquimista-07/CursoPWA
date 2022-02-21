@@ -34,6 +34,7 @@ self.addEventListener('fetch', evento => {
     */
 
     // Ejemplo de como modificamos la respuesta de la petición Fetch
+    /*
     if(evento.request.url.includes('style.css')){
         //NOTA: El objeto Response es el resultado de cualquier petición Fetch
         // Para más información revisar la documentación en: https://developer.mozilla.org/es/docs/Web/API/Response
@@ -47,6 +48,13 @@ self.addEventListener('fetch', evento => {
                 'Content-Type': 'text/css'
             }
         });
+        evento.respondWith(respuesta);
+    }
+    */
+
+    // Solución de la tarea en la cual interceptamos la petición de la imágen para devolver otra
+    if(evento.request.url.includes('main.jpg')){
+        let respuesta = fetch('img/main-patas-arriba.jpg');
         evento.respondWith(respuesta);
     }
 
