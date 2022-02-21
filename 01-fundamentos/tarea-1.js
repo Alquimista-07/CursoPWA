@@ -17,6 +17,7 @@
 */
 
 // Resolución de la tarea #1
+/*
 fetch('https://swapi.dev/api/people/1/')
     .then(res => res.json())
     .then(persona =>{
@@ -24,7 +25,7 @@ fetch('https://swapi.dev/api/people/1/')
         console.log("Nombre: ", persona.name);
         console.log("Género: ", persona.gender);
     });
-
+*/
 
 
 // ==============================================
@@ -43,7 +44,28 @@ fetch('https://swapi.dev/api/people/1/')
 */
 
 // Resolución de la tarea #2
+function postData(persona){
 
+    let datos = {
+        nombre: persona.name,
+        genero: persona.gender
+    }
+
+    return fetch('https://reqres.in/api/users', {
+        method: 'POST',
+        body: JSON.stringify(datos),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+}
+
+fetch('https://swapi.dev/api/people/1/')
+    .then(res => res.json())
+    .then(postData)
+    .then(resp => resp.json())
+    .then(console.log);
 
 
 
