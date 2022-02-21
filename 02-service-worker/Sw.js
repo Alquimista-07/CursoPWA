@@ -53,9 +53,34 @@ self.addEventListener('fetch', evento => {
     */
 
     // Solución de la tarea en la cual interceptamos la petición de la imágen para devolver otra
+    /*
     if(evento.request.url.includes('main.jpg')){
         let respuesta = fetch('img/main-patas-arriba.jpg');
         evento.respondWith(respuesta);
     }
+    */
+
+    //Ejercicio para el manejo de errores en el Fetch Event
+    //Para este proceso vamos a cambiar en el index.html el llamdo a main.jpg para simular una petición
+    //que no existe
+    //OJO: Acá en este cas se esta haciendo para todo, es decir, si falla por ejemplo la petición al style.css este se va a interpertar como una imágen
+    //por lo tanto es mejor organizar y validar correctamente, pero para el ejercicio lo dejamos como está 
+    const respuesta = (
+        fetch(evento.request)
+            .then(resp => {
+                //console.log(resp);
+                /*if(resp.ok){
+                    return resp;
+                }
+                else{
+                    return fetch('img/main.jpg');
+                }*/
+
+                //Podemos usar el operador ternario para ajustar y hacer más legible el código
+                return resp.ok ? resp : fetch('img/main.jpg');
+
+            })
+    );
+    evento.respondWith(respuesta);
 
 });
