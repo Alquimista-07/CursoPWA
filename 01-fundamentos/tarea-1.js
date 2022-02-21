@@ -17,7 +17,13 @@
 */
 
 // Resolución de la tarea #1
-
+fetch('https://swapi.dev/api/people/1/')
+    .then(res => res.json())
+    .then(persona =>{
+        //console.log(persona);
+        console.log("Nombre: ", persona.name);
+        console.log("Género: ", persona.gender);
+    });
 
 
 
