@@ -21,6 +21,7 @@ self.addEventListener('fetch', evento => {
     */
 
     //Acá por ejemplo vamos a hacer algo con las imágenes
+    /*
     if(evento.request.url.includes('.jpg')){
         console.log(evento.request.url);
         // Formas de hacer las peticiones
@@ -29,6 +30,24 @@ self.addEventListener('fetch', evento => {
         let fotoReq = fetch(evento.request);
 
         evento.respondWith(fotoReq);
+    }
+    */
+
+    // Ejemplo de como modificamos la respuesta de la petición Fetch
+    if(evento.request.url.includes('style.css')){
+        //NOTA: El objeto Response es el resultado de cualquier petición Fetch
+        // Para más información revisar la documentación en: https://developer.mozilla.org/es/docs/Web/API/Response
+        let respuesta = new Response(`
+            body{
+                background-color: red !important;
+                color: pink;
+            }
+        `, {
+            headers: {
+                'Content-Type': 'text/css'
+            }
+        });
+        evento.respondWith(respuesta);
     }
 
 });
