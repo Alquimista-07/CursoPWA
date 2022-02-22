@@ -49,8 +49,9 @@ self.addEventListener('install', evento => {
 
 //*---------------------------------------------------------------------------------------*//
 //Evento de la activación del SW
-//Cuando el SW toma el control de la aplicación
 //*---------------------------------------------------------------------------------------*//
+
+//Cuando el SW toma el control de la aplicación
 self.addEventListener('activate', evento => {
     
     // Usualmente el evento activate es un buen momento para:
@@ -82,3 +83,9 @@ self.addEventListener('fetch', evento => {
     }
     */
 });
+
+//*---------------------------------------------------------------------------------------*//
+//Explicación del event listener Sync
+//*---------------------------------------------------------------------------------------*//
+
+//SYNC: Normalmente es muy util cuando perdimos conexión a internet y la recueperamos
