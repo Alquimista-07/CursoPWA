@@ -31,7 +31,9 @@ self.addEventListener('install', evento => {
             self.skipWaiting();
             //Llamamos la resolucion de la promesa
             resolve();
-        }, 1000);
+        //}, 1000);
+        //Ajusteamos para que se ejecute aún más rápido, esto para la explicacion de los eventos del fetch
+        }, 1);
 
         
 
@@ -50,4 +52,23 @@ self.addEventListener('activate', evento => {
     // Usualmente el evento activate es un buen momento para:
     //Borrar cache viejo
     console.log('SW: Activo y listo para controlar la App');
+});
+
+//Explicación del event listener del Fetch
+
+//FETCH: Manejo de peticiones HTTP
+//Nota: Para este ejercicio también modificamos el archivo app.js para agregar una petición fetch
+self.addEventListener('fetch', evento => {
+
+    //Usualmente cuando nosotros hacemos un fetch lo que vamos a hacer acá es:
+    //Aplicar la estrategias del cache
+    console.log('SW:', evento.request.url);
+
+    if(evento.request.url.includes('https://reqres.in/')){
+        const respuesta = new Response(`{
+            ok: false,
+            mensaje: 'jajaja'
+        }`);
+        evento.respondWith(respuesta);
+    }
 });
