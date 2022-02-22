@@ -17,7 +17,7 @@ self.addEventListener('install', evento => {
     
     //self.skipWaiting();
     
-    //NOTA: No es recomendable dejarlo porque puede ser que el usuario este trabajando con algo del SW, por ejemplo recibir una notificación push,
+    //NOTA: No es recomendable dejar el evento skipWaiting() porque puede ser que el usuario este trabajando con algo del SW, por ejemplo recibir una notificación push,
     //o algo importante que puede estar sucediendo que le interesa al usuario pero como saltamos lo del anterior SW pueda ser que no ejecute el codigo y
     //perder la información importante que el cliente este esperando, lo mejor es que el cliente cierr la app web para que el nuevo SW entre en funcionamiento
 
