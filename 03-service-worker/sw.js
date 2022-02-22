@@ -89,3 +89,20 @@ self.addEventListener('fetch', evento => {
 //*---------------------------------------------------------------------------------------*//
 
 //SYNC: Normalmente es muy util cuando perdimos conexión a internet y la recueperamos
+self.addEventListener('sync', evento => {
+    
+    console.log('Tenemos conexión a internet');
+    console.log(evento);
+    
+    console.log(evento.tag);
+    //NOTA: Que es el tag: Normalmente cuando nostros vamos a hacer un posteo, nosotros le vamos a asignar un tag o etiqueta y es algo
+    //que le diga por ejemplo esto van a ser los posteos o van a ser los posteos sin conexión, para que cuando recuperemos la conexión
+    //y para cuando se dispare este evento de sincronización, entonces se va a revisar por tags que es lo que se debe de hacer.
+    
+    //El sync por si solo no va a recebir un argumento, osea no se va a recibir la data que nosotros queremos postear ahí,
+    //sino que acá viene una combinación con lo que es el indexDB que es una base de datos interna de JavaScript y ya traen los navegadores web
+    //y leerla en base al tag y todas las peticiones o todo lo que se encuentre en esa collection de base de datos es lo que se va a postear.
+    
+    //Pero en este ejemplo no se aplica bien la funcionalidad del evento sync sino como tal solo el disparo del evento.
+    //Adicionalmente para este ejemplo vamos a modificar una parte de codigo en el app.js
+});
