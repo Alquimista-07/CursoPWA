@@ -21,6 +21,7 @@ self.addEventListener('install', evento => {
     //o algo importante que puede estar sucediendo que le interesa al usuario pero como saltamos lo del anterior SW pueda ser que no ejecute el codigo y
     //perder la información importante que el cliente este esperando, lo mejor es que el cliente cierr la app web para que el nuevo SW entre en funcionamiento
 
+    // Explicación evento waitUntil()
     const instalacion = new Promise((resolve, reject) => {
 
         //Simulación de que nuestra instalación se tarda un segundo
