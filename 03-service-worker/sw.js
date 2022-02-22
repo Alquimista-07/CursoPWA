@@ -1,7 +1,9 @@
 
 // Ciclo de vida del SW
 
+//*---------------------------------------------------------------------------------------*//
 // Evento de la instalación
+//*---------------------------------------------------------------------------------------*//
 self.addEventListener('install', evento => {
 
     //Normalmente en el evento de la instalación nosotros hacemos cosas como:
@@ -45,8 +47,10 @@ self.addEventListener('install', evento => {
     evento.waitUntil(instalacion);
 });
 
+//*---------------------------------------------------------------------------------------*//
 //Evento de la activación del SW
 //Cuando el SW toma el control de la aplicación
+//*---------------------------------------------------------------------------------------*//
 self.addEventListener('activate', evento => {
     
     // Usualmente el evento activate es un buen momento para:
@@ -54,7 +58,9 @@ self.addEventListener('activate', evento => {
     console.log('SW: Activo y listo para controlar la App');
 });
 
+//*---------------------------------------------------------------------------------------*//
 //Explicación del event listener del Fetch
+//*---------------------------------------------------------------------------------------*//
 
 //FETCH: Manejo de peticiones HTTP
 //Nota: Para este ejercicio también modificamos el archivo app.js para agregar una petición fetch
