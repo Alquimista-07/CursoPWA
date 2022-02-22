@@ -60,8 +60,9 @@ self.addEventListener('activate', evento => {
 //Nota: Para este ejercicio también modificamos el archivo app.js para agregar una petición fetch
 self.addEventListener('fetch', evento => {
 
+    // Comentamos la siguiente parte de codigo con el fin de que no interfiera para la explicación del evento sync
+    // ya que tiene console y demás
     /*
-    // Comentamos esta parte de codigo con el fin de que no interfiera para la explicación del evento sync
     //Usualmente cuando nosotros hacemos un fetch lo que vamos a hacer acá es:
     //Aplicar la estrategias del cache
     console.log('SW:', evento.request.url);
