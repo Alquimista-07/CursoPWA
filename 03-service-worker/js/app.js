@@ -17,6 +17,17 @@ if ( navigator.serviceWorker ) {
             //deberíamos ver los console colocados en el evento sync
 
         }, 3000);
+        
+        //------------------------------------------------//
+        //Adición para la explicación del evento push
+        //------------------------------------------------//
+        Notification.requestPermission().then(resultado => {
+
+            console.log(resultado);
+            registro.showNotification('Hola Mundo!!!...');
+
+    });
+
     });
 }
 

@@ -106,3 +106,25 @@ self.addEventListener('sync', evento => {
     //Pero en este ejemplo no se aplica bien la funcionalidad del evento sync sino como tal solo el disparo del evento.
     //Adicionalmente para este ejemplo vamos a modificar una parte de codigo en el app.js
 });
+
+
+//*---------------------------------------------------------------------------------------*//
+//Explicación del event listener Push
+//*---------------------------------------------------------------------------------------*//
+//PUSH: Manejar la push notification
+self.addEventListener('push', evento =>{
+    
+    //Cuando entremos vien en esta sección se va a aprender como crear nuestro propio push server
+    //y vamos a ver que en el evento se puede mandar inclusive como queremos que vibre el telefono
+    //y otras cosas más
+
+    console.log('Notificación Recibida');
+
+    //Para este caso para probar en el apartado de developer tools del navegador
+    //tenemos un boton push el cual nos ejecuta el evento y nos muestra el mensaje definido
+    //en el anterior console
+
+    //Ahora para que no quede tan plana la explicación vamos a modificar nuevamente el codigo del register en nuestro archivo
+    //app.js
+
+});
