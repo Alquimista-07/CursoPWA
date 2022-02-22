@@ -60,6 +60,7 @@ self.addEventListener('activate', evento => {
 //Nota: Para este ejercicio también modificamos el archivo app.js para agregar una petición fetch
 self.addEventListener('fetch', evento => {
 
+    /*
     //Usualmente cuando nosotros hacemos un fetch lo que vamos a hacer acá es:
     //Aplicar la estrategias del cache
     console.log('SW:', evento.request.url);
@@ -71,4 +72,5 @@ self.addEventListener('fetch', evento => {
         }`);
         evento.respondWith(respuesta);
     }
+    */
 });
