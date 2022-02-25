@@ -12,6 +12,9 @@ if ( navigator.serviceWorker ) {
 // Nota: Hay que tener en cuenta que hay navegadores que no tienen el cache storage, pero para validar podemos ir a: https://caniuse.com/?search=cache
 // Entonces por lo tanto lo que se debe hacer es colocar una clausula para validar si podemos usar el cache storage.
 // Normalmente si el navegador soporta el SW eso quiere decir que también soporta cache
+
+// Para la explicación de guardar el APP SHELL a la hora de instalar el SW vamos a comentar todo el bloqu siguiente
+/*
 if(window.caches){
 
     // Acá lo que vamos hacemos con esta instrucción es decirle que vaya al cahce, que es un espacio del navegador web un espacio del disco duro
@@ -69,3 +72,4 @@ if(window.caches){
     });
 
 }
+*/
