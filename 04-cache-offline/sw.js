@@ -8,7 +8,8 @@ self.addEventListener("fetch", (event) => {
     `);
     */
 
-  const offlineResp = new Response(`
+  const offlineResp = new Response(
+    `
 
     <!DOCTYPE html>
     <html lang="en">
@@ -26,11 +27,13 @@ self.addEventListener("fetch", (event) => {
     </body>
     </html>
 
-    `, {
-        headers: {
-            'Content-Type':'text/html'
-        }
-    });
+    `,
+    {
+      headers: {
+        "Content-Type": "text/html",
+      },
+    }
+  );
 
   //Acá lo que se esta haciendo es que para cada petición fetch regrese exáctamente lo mismo que se esta pidiendo
   const resp = fetch(event.request).catch(() => offlineResp);
