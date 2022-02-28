@@ -17,6 +17,7 @@ self.addEventListener('install', event => {
         .then(cache => {
             
             return cache.addAll([
+                '/',
                 '/index.html',
                 '/css/style.css',
                 '/img/main.jpg',
@@ -27,5 +28,25 @@ self.addEventListener('install', event => {
         });
 
         event.waitUntil(cacheProm);
+
+});
+
+//--------------------------------------------------------------
+// Estrategias del cache
+//--------------------------------------------------------------
+self.addEventListener('fetch', event =>{
+
+    // 1- Cache Only: 
+    // Esta es usada cuando queremos que la aplicación solo sea servida desde el cache
+    // y no va a haber petición que acceda a la web
+    // NOTA: En este caso nos va a fallar y es un error algo complicado ya que nos falta almacenar el / en el cache
+    // para ello lo vamos a almacenar en el cache modificando en el event listener install, 
+    
+    // NOTA: Adicionalmente hay que aclara que esta estrategia tiene un problema y es que si nosotros jamás
+    // actualizamos el SW, este jamás va a ir a la web y no obtendríasmos actualizaciones, por lo tanto si el usuario quiere
+    // acceder a un recurso que no este en el cache la aplicación va a fallar.
+    event.respondWith(caches.match(event.request));
+
+
 
 });
