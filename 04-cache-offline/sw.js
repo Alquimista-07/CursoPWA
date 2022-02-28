@@ -11,9 +11,12 @@
 // Por lo tanto APP SHELL es todo lo que nuestra aplicación ncesita para que funcione y es algo que nosotros queremos cargar rápidamente por lo tanto eso lo vamos a colocar en el cache
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// Creamos una constante para optimizar y almacenar el nombre del cache
+const CACHE_NAME = 'cache-1';
+
 self.addEventListener('install', event => {
 
-    const cacheProm = caches.open('cache-1')
+    const cacheProm = caches.open(CACHE_NAME)
         .then(cache => {
             
             return cache.addAll([
@@ -45,8 +48,38 @@ self.addEventListener('fetch', event =>{
     // NOTA: Adicionalmente hay que aclara que esta estrategia tiene un problema y es que si nosotros jamás
     // actualizamos el SW, este jamás va a ir a la web y no obtendríasmos actualizaciones, por lo tanto si el usuario quiere
     // acceder a un recurso que no este en el cache la aplicación va a fallar.
+    // Para la explicación de la segunda estrategia de cache comentamos la siguiente línea para que no entre en conflicto
+    /*
     event.respondWith(caches.match(event.request));
+    */
 
+    // 2- Cache with network fallback:
+    // En otras palabras esta estrategia esta indicando que intente primero leer el cache y después si no encuentras el archivo
+    // en el cache ve a internet
+    
+    // Por lo tanto lo primero que tenemos que hacer es verificar si el archivo existe en el cache
+    const respuesta = caches.match(event.request)
+        .then(res => {
 
+            if(res) return res;
+
+            // No existe el archivo
+            // tengo que ir a la web
+            console.log('No Existe!!!...', event.request.url);
+            
+            return fetch(event.request).then(newResp => {
+                    
+                // Grabamos el archivo nuevo en el cache nuevamente
+                caches.open(CACHE_NAME)
+                    .then(cache => {
+                        cache.put(event.request, newResp);
+                    });
+                
+                return newResp.clone();
+            });
+
+        });
+
+    event.respondWith(respuesta);
 
 });
