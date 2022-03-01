@@ -16,10 +16,35 @@
 /*
 const CACHE_NAME = 'cache-1';
 */
-const CACHE_STATIC_NAME = 'static-v1';
+const CACHE_STATIC_NAME = 'static-v2';
 const CACHE_DYNAMIC_NAME = 'dynamic-v1';
 
 const CACHE_INMUTALBE_NAME = 'inmutable-v1';
+
+// Función para limpiar y limitar el cache
+// Nosotros podemos eliegir cual cache limpiar y usualmanete el cache que se limpia es el dynamic
+// Pero para el caso del curso se va a hacer que funcione para que limpie cualquier cache.
+// Para la siguiente fucnión especificaremos por parametro el nombre del cache, el número de elementos que quiero mantener en el cache el cual puede ser estático o dinámico
+function limpiarCache(cacheName, numeroItems){
+
+    caches.open(cacheName)
+        .then(cache => {
+
+            // Ahora necesito barrer todos los elementos que contenga ese cache
+            cache.keys()
+                .then(keys => {
+                    console.log(keys);
+
+                    if(keys.length > numeroItems){
+                        cache.delete(keys[0])
+                            .then(limpiarCache(cacheName, numeroItems));
+                    }
+
+                });
+
+        });
+
+}
 
 self.addEventListener('install', event => {
 
@@ -91,6 +116,8 @@ self.addEventListener('fetch', event =>{
                 caches.open(CACHE_DYNAMIC_NAME)
                     .then(cache => {
                         cache.put(event.request, newResp);
+                        // Llamamos funcion limpiar cache luego de grabar 
+                        limpiarCache(CACHE_DYNAMIC_NAME, 50);
                     });
                 
                 return newResp.clone();
