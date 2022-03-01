@@ -21,6 +21,9 @@ const CACHE_DYNAMIC_NAME = 'dynamic-v1';
 
 const CACHE_INMUTALBE_NAME = 'inmutable-v1';
 
+// Constante para optimizar el valor de limite del cache dinamico
+const CACHE_DYNAMIC_LIMIT = 50;
+
 // Función para limpiar y limitar el cache
 // Nosotros podemos eliegir cual cache limpiar y usualmanete el cache que se limpia es el dynamic
 // Pero para el caso del curso se va a hacer que funcione para que limpie cualquier cache.
@@ -78,6 +81,9 @@ self.addEventListener('install', event => {
 //--------------------------------------------------------------
 self.addEventListener('fetch', event =>{
 
+    //-----------------------------------------------------------------------------------------------------
+    // Comentamos toda la estrategia 1 para la explicación de la estrategia 2 cache with network fallback
+    //-----------------------------------------------------------------------------------------------------
     // 1- Cache Only: 
     // Esta es usada cuando queremos que la aplicación solo sea servida desde el cache
     // y no va a haber petición que acceda a la web
@@ -92,39 +98,78 @@ self.addEventListener('fetch', event =>{
     event.respondWith(caches.match(event.request));
     */
 
+    //-----------------------------------------------------------------------------------------------------
+    // Comentamos toda la estrategia 2 para la explicación de la estrategia 3 network with cache fallback
+    //-----------------------------------------------------------------------------------------------------
     // 2- Cache with network fallback:
     // En otras palabras esta estrategia esta indicando que intente primero leer el cache y después si no encuentras el archivo
     // en el cache ve a internet
     
     // Por lo tanto lo primero que tenemos que hacer es verificar si el archivo existe en el cache
-    const respuesta = caches.match(event.request)
-        .then(res => {
+    // const respuesta = caches.match(event.request)
+    //     .then(res => {
 
-            if(res) return res;
+    //         if(res) return res;
 
-            // No existe el archivo
-            // tengo que ir a la web
-            console.log('No Existe!!!...', event.request.url);
+    //         // No existe el archivo
+    //         // tengo que ir a la web
+    //         console.log('No Existe!!!...', event.request.url);
             
-            return fetch(event.request).then(newResp => {
+    //         return fetch(event.request).then(newResp => {
                     
-                // Grabamos el archivo nuevo en el cache nuevamente
-                // Comentamos lo siguiente y agregamos optimización de código
-                /*
-                caches.open(CACHE_NAME)
-                */
-                caches.open(CACHE_DYNAMIC_NAME)
-                    .then(cache => {
-                        cache.put(event.request, newResp);
-                        // Llamamos funcion limpiar cache luego de grabar 
-                        limpiarCache(CACHE_DYNAMIC_NAME, 50);
-                    });
+    //             // Grabamos el archivo nuevo en el cache nuevamente
+    //             // Comentamos lo siguiente y agregamos optimización de código
+    //             /*
+    //             caches.open(CACHE_NAME)
+    //             */
+    //             caches.open(CACHE_DYNAMIC_NAME)
+    //                 .then(cache => {
+    //                     cache.put(event.request, newResp);
+    //                     // Llamamos funcion limpiar cache luego de grabar 
+    //                     limpiarCache(CACHE_DYNAMIC_NAME, 50);
+    //                 });
                 
-                return newResp.clone();
+    //             return newResp.clone();
+    //         });
+
+    //     });
+
+    // event.respondWith(respuesta);
+
+    // 3- Estretegia: Network with cache fallback
+    // Básicamente lo que hace esta estrategia de cache es que primero vaya a internet, intente obtener el recurso
+    // y si lo tiene muestralo, si no lo tiene intenta ver si existe en el cache
+
+    //--------------------------------------------------------------------------------------------------------------------------------
+    //NOTA: Hay unos inconvenientes con la estrategia 3 sobre todo cuando estamos en un dispositivo móvile porque:
+    // 1. Siempre hace un fetch, es decir, que siempre hay un consumo de datos y no todos tenemos plan ilimitado de datos en nuestros
+    //    dispositivos móviles
+    // 2. Esta estrategia es mucho más lenta que la estrategia 2 de cache first, porque si estamos en una red limitada, en redes 2G,
+    //    o un internet muy lento, es posible que en esta estrategia puede que el fetch lo haga pero pasen segundos antes de obtener 
+    //    una respuesta de que lo obtuvo o una respuesta de error
+    //--------------------------------------------------------------------------------------------------------------------------------
+    const respuestaNetwork = fetch(event.request).then(res => {
+
+        console.log('Fetch', res);
+
+        // Ahora algo que podemos hacer como una clausula de seguridad es que si la respuesta no existe intente leela del cache
+        if(!res) return caches.match(event.request);
+
+        caches.open(CACHE_DYNAMIC_NAME)
+            .then(cache => {
+                cache.put(event.request, res);
+                limpiarCache(CACHE_DYNAMIC_NAME, CACHE_DYNAMIC_LIMIT);
             });
 
-        });
+        return res.clone();
+        
+    }).catch(err => {
+        // Capturamos el error en caso de que no vaya a internet y validamos si existe algo en el cache que haga match
+        // con la petición que me están dando y eso es lo que nos tiene que regresar
+        return caches.match(event.request);
+    });
 
-    event.respondWith(respuesta);
+    
+    event.respondWith(respuestaNetwork);
 
 });
