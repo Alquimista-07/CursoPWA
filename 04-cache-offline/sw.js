@@ -12,11 +12,21 @@
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Creamos una constante para optimizar y almacenar el nombre del cache
+// Comentamos la siguiente linea que ya no nos va a servir ya que vamos a optimizar el código
+/*
 const CACHE_NAME = 'cache-1';
+*/
+const CACHE_STATIC_NAME = 'static-v1';
+const CACHE_DYNAMIC_NAME = 'dynamic-v1';
+
+const CACHE_INMUTALBE_NAME = 'inmutable-v1';
 
 self.addEventListener('install', event => {
 
+    /*
     const cacheProm = caches.open(CACHE_NAME)
+    */
+    const cacheProm = caches.open(CACHE_STATIC_NAME)
         .then(cache => {
             
             return cache.addAll([
@@ -24,13 +34,17 @@ self.addEventListener('install', event => {
                 '/index.html',
                 '/css/style.css',
                 '/img/main.jpg',
-                'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
+                //'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
                 '/js/app.js'
             ]);
 
         });
-
-        event.waitUntil(cacheProm);
+        
+        // Agregamos el contenido inmutable al nuevo cache para el tema de la optimización del código
+        const cacheInmutable = caches.open(CACHE_INMUTALBE_NAME)
+            .then(cache => cache.add('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'));
+        
+        event.waitUntil(Promise.all([cacheProm, cacheInmutable]));
 
 });
 
@@ -70,7 +84,11 @@ self.addEventListener('fetch', event =>{
             return fetch(event.request).then(newResp => {
                     
                 // Grabamos el archivo nuevo en el cache nuevamente
+                // Comentamos lo siguiente y agregamos optimización de código
+                /*
                 caches.open(CACHE_NAME)
+                */
+                caches.open(CACHE_DYNAMIC_NAME)
                     .then(cache => {
                         cache.put(event.request, newResp);
                     });
