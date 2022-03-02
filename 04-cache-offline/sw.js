@@ -136,6 +136,10 @@ self.addEventListener('fetch', event =>{
 
     // event.respondWith(respuesta);
 
+
+    //-----------------------------------------------------------------------------------------------------
+    // Comentamos toda la estrategia 3 para la explicación de la estrategia 4 cache with network update
+    //-----------------------------------------------------------------------------------------------------
     // 3- Estretegia: Network with cache fallback
     // Básicamente lo que hace esta estrategia de cache es que primero vaya a internet, intente obtener el recurso
     // y si lo tiene muestralo, si no lo tiene intenta ver si existe en el cache
@@ -148,28 +152,54 @@ self.addEventListener('fetch', event =>{
     //    o un internet muy lento, es posible que en esta estrategia puede que el fetch lo haga pero pasen segundos antes de obtener 
     //    una respuesta de que lo obtuvo o una respuesta de error
     //--------------------------------------------------------------------------------------------------------------------------------
-    const respuestaNetwork = fetch(event.request).then(res => {
+    // const respuestaNetwork = fetch(event.request).then(res => {
 
-        console.log('Fetch', res);
+    //     console.log('Fetch', res);
 
-        // Ahora algo que podemos hacer como una clausula de seguridad es que si la respuesta no existe intente leela del cache
-        if(!res) return caches.match(event.request);
+    //     // Ahora algo que podemos hacer como una clausula de seguridad es que si la respuesta no existe intente leela del cache
+    //     if(!res) return caches.match(event.request);
 
-        caches.open(CACHE_DYNAMIC_NAME)
-            .then(cache => {
-                cache.put(event.request, res);
-                limpiarCache(CACHE_DYNAMIC_NAME, CACHE_DYNAMIC_LIMIT);
-            });
+    //     caches.open(CACHE_DYNAMIC_NAME)
+    //         .then(cache => {
+    //             cache.put(event.request, res);
+    //             limpiarCache(CACHE_DYNAMIC_NAME, CACHE_DYNAMIC_LIMIT);
+    //         });
 
-        return res.clone();
+    //     return res.clone();
         
-    }).catch(err => {
-        // Capturamos el error en caso de que no vaya a internet y validamos si existe algo en el cache que haga match
-        // con la petición que me están dando y eso es lo que nos tiene que regresar
-        return caches.match(event.request);
-    });
+    // }).catch(err => {
+    //     // Capturamos el error en caso de que no vaya a internet y validamos si existe algo en el cache que haga match
+    //     // con la petición que me están dando y eso es lo que nos tiene que regresar
+    //     return caches.match(event.request);
+    // });
 
     
-    event.respondWith(respuestaNetwork);
+    // event.respondWith(respuestaNetwork);
+
+
+    // 4- Estretegia: Cache with network update
+    // Esta estrategía es muy útil cuando el rendimiento es crítico, es decir, necesitamos que la información se muestre
+    // lo más rapido posible en nuestra aplicación para que el ususrio sienta que esta trabajando en una aplicación nativa
+    // pero también nos interesan las actualizaciones o las actualizaciones son importantes, pero ene este caso nuestras 
+    // actualizaciones siempre estarán un paso atrás, es decir, una versión atrás de la versión actual de nuestra aplicación
+
+    // Agregamos una clausula para que me agregue el bootstrap ya que no estamos llamando al cache inmutable en ningún momento
+    // y por lo tanto no lo muestra
+    if(event.request.url.includes('bootstrap')){
+        return event.respondWith(caches.match(event.request));
+    }
+
+    const respuestaNetworkUpdate = caches.open(CACHE_STATIC_NAME).then(cache => {
+
+        fetch(event.request).then(newResp => 
+            cache.put(event.request, newResp));
+
+        return cache.match(event.request);
+
+    });
+
+    event.respondWith(respuestaNetworkUpdate);
+
+
 
 });
