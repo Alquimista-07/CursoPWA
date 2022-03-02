@@ -81,6 +81,18 @@ self.addEventListener('fetch', e => {
                     });
 
                 return newResp.clone();
+                
+            }).catch( err => {
+
+                // Validamos para que mande la pagina de error personalizada siempre y cuando
+                // se solicite una página web, ya que si lo que no existiera fuera por ejemplo una imágen o un archivo css
+                // no mostraria el error y pues eso no sería lo correcto
+                // NOTA: La siguiene validación también se puede usar para validar si lo que se solicitan son imágenes, css y
+                //       cualquier cosa en particular
+                if( e.request.headers.get('accept').includes('text/html') ){
+                    return caches.match('/pages/offline.html');
+                }
+
             });
 
 
