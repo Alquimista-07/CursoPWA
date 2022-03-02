@@ -3,7 +3,8 @@
 
 // Hacemos las configuraciones necesarias para la instalación y creación de nuestros cache
 // tal cual como lo vimos anteriormente
-const CACHE_STATIC_NAME  = 'static-v1';
+// const CACHE_STATIC_NAME  = 'static-v1';
+const CACHE_STATIC_NAME  = 'static-v4';
 const CACHE_DYNAMIC_NAME = 'dynamic-v1';
 const CACHE_INMUTABLE_NAME = 'inmutable-v1';
 
@@ -54,8 +55,33 @@ self.addEventListener('install', e => {
     const cacheInmutable = caches.open( CACHE_INMUTABLE_NAME )
             .then( cache => cache.add('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'));
 
-
+    
+    // Obligamos a que las promesas se ejecuten en orden para ratificar que todo se agregue al cache correctamente
+    // y no se cause un fallo debido a que por ejemplo el cache inmutable se instalo primero y el cacheprom aún no ha terminado de instalar
+    // lo cual puede causar un error porque algún archivo no exista 
     e.waitUntil( Promise.all([cacheProm, cacheInmutable]) );
+
+});
+
+// Agregamos el evento activate el cual se va ejecutar después de que nuestro SW se instale y el cual va a servir para que limpiar y borrar 
+// los caches de versiones viejas los cuales quedan ocupando espacio en el dispositivo y ya no sirven para nada
+// NOTA: Ojo este código nos podría sirvir para borrar cualquier cache no solo el static, ya que básicamente lo que se haría es agregar otro bloque de código
+//       casi con las mismas instrucciones y cambiar la constante en la validación if por los nombre de los otros cache
+self.addEventListener('activate', e => {
+
+    const respuesta = caches.keys().then( keys => {
+
+        keys.forEach( key => {
+
+            if( key !== CACHE_STATIC_NAME && key.includes('static') ){
+                return caches.delete(key);
+            }
+
+        });
+
+    });
+
+    e.waitUntil(respuesta);
 
 });
 
