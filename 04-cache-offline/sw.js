@@ -63,7 +63,8 @@ self.addEventListener('install', event => {
                 '/css/style.css',
                 '/img/main.jpg',
                 //'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
-                '/js/app.js'
+                '/js/app.js',
+                '/img/no-img.jpg'
             ]);
 
         });
@@ -177,6 +178,9 @@ self.addEventListener('fetch', event =>{
     // event.respondWith(respuestaNetwork);
 
 
+    //-----------------------------------------------------------------------------------------------------
+    // Comentamos toda la estrategia 4 para la explicación de la estrategia 5 cache y network Race
+    //-----------------------------------------------------------------------------------------------------
     // 4- Estretegia: Cache with network update
     // Esta estrategía es muy útil cuando el rendimiento es crítico, es decir, necesitamos que la información se muestre
     // lo más rapido posible en nuestra aplicación para que el ususrio sienta que esta trabajando en una aplicación nativa
@@ -185,20 +189,72 @@ self.addEventListener('fetch', event =>{
 
     // Agregamos una clausula para que me agregue el bootstrap ya que no estamos llamando al cache inmutable en ningún momento
     // y por lo tanto no lo muestra
-    if(event.request.url.includes('bootstrap')){
-        return event.respondWith(caches.match(event.request));
-    }
+    // if(event.request.url.includes('bootstrap')){
+    //     return event.respondWith(caches.match(event.request));
+    // }
 
-    const respuestaNetworkUpdate = caches.open(CACHE_STATIC_NAME).then(cache => {
+    // const respuestaNetworkUpdate = caches.open(CACHE_STATIC_NAME).then(cache => {
 
-        fetch(event.request).then(newResp => 
-            cache.put(event.request, newResp));
+    //     fetch(event.request).then(newResp => 
+    //         cache.put(event.request, newResp));
 
-        return cache.match(event.request);
+    //     return cache.match(event.request);
+
+    // });
+
+    // event.respondWith(respuestaNetworkUpdate);
+
+    
+    // 5- Estretegia: Cache & network Race
+    // Como su nombre lo indica es una competencia para ver cual de los dos responde primero
+    // si el cache o la red.
+    const respuestaCacheNetworkRace = new Promise((resolve, reject) => {
+
+        // Creamos una bandera que me diga cuando una de las dos fue rechazada
+        let rechazada = false;
+
+        // Definimos una función para validar el fallo
+        const falloUnaVez = () =>{
+
+            if(rechazada){
+
+                // En caso de que no exista ni en el cache ni existe una petición válida entonces
+                // agregamos una validación adicional en la cual por ejemplo si fuera una imágen la que 
+                // esta fallando puedo regresar una imágen por deecto
+                if (/\.(png|jpg)$/i.test(event.request.url)) {
+
+                    resolve(caches.match('/img/no-img.jpg'));
+
+                }else{ 
+                    reject('No se encontro respuesta');
+                }
+
+            }else{
+                rechazada = true;
+            }
+        };
+
+        // Dentro de esta promesa yo voy a poner a competir cual de las dos se hace pirmero
+
+        // Petición:
+        fetch(event.request).then(res => {
+            // Validamos si es ok resuelve res si no llama la función falloUnaVez 
+            // y en caso de un error captura el catch y llama inmediatamente la función falloUnaVez
+            res.ok ? resolve(res) : falloUnaVez();
+        }).catch(falloUnaVez);
+
+        //Cache:
+        caches.match(event.request).then(res => {
+            // Validamos si es ok resuelve res si no llama la función falloUnaVez 
+            // y en caso de un error captura el catch y llama inmediatamente la función falloUnaVez
+            res ? resolve(res) : falloUnaVez();
+        }).catch(falloUnaVez);
+
 
     });
 
-    event.respondWith(respuestaNetworkUpdate);
+    
+    event.respondWith(respuestaCacheNetworkRace);
 
 
 
