@@ -1,3 +1,6 @@
+// Imports
+importScripts('js/sw-utils.js');
+
 // Creamos unas constantes con los tipos de cache que vamos a manejar
 const STATIC_CACHE    = 'static-v1';
 const DYNAMIC_CACHE   = 'dynamic-v1';
@@ -55,5 +58,29 @@ self.addEventListener('activate', e => {
     });
 
     e.waitUntil( respuesta );
+
+});
+
+self.addEventListener('fetch', e => {
+
+    const respuesta = caches.match( e.request ).then( res =>{
+
+        if( res ){
+            return res;
+        }
+        else{
+            
+            // Implementamos la estrategia de dynaic cache (network fallback)
+            return fetch( e.request ).then( newRes =>{
+
+                return actualizaCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
+
+            });
+
+        }
+
+    });
+
+    e.respondWith( respuesta );
 
 });
