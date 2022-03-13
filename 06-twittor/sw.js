@@ -51,7 +51,13 @@ self.addEventListener('activate', e => {
 
         keys.forEach( key => {
 
+            // Ajustamos para que borre el cache static para corroborar que se actualice
             if (  key !== STATIC_CACHE && key.includes('static') ) {
+                return caches.delete(key);
+            }
+
+            // Ajustamos para que borre el cache dinamico para corroborar que se actualice
+            if (  key !== DYNAMIC_CACHE && key.includes('dynamic') ) {
                 return caches.delete(key);
             }
 
