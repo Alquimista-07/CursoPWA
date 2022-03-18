@@ -12,6 +12,12 @@
   var db = new PouchDB('todos');
   var remoteCouch = false;
 
+  // El siguiente codigo permite acualizar el UI luego de insrtar en la DB
+  db.changes({
+    since: 'now',
+    live: true
+  }).on('change', showTodos);
+
   // We have to create a new todo document and enter it in the database
   // Escribir en la base de datos
   function addTodo(text) {
@@ -37,7 +43,23 @@
   }
 
   // Show the current list of todos by reading them from the database
+  // Obtener todos los documentos
   function showTodos() {
+
+    // Código mostrado en el tutorial usando callbacks
+    /*
+    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+      redrawTodosUI(doc.rows);
+    });
+    */
+
+    // Ahora vamos a codificar para realizar con promesas
+    db.allDocs( { include_docs: true, descending: false} )
+      .then(doc => {
+        console.log(doc);
+        redrawTodosUI(doc.rows)
+      });
+
   }
 
   function checkboxChanged(todo, event) {
