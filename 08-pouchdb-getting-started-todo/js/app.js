@@ -22,6 +22,9 @@
   // Escribir en la base de datos
   function addTodo(text) {
 
+    // Validamos para no insertar registros vacios en la DB
+    if ( text.length <= 0 ) return;
+
     var todo = {
       _id: new Date().toISOString(),
       title: text,
@@ -62,16 +65,41 @@
 
   }
 
+  // Actualizar un registro en la base de  cuando marcamos un check
   function checkboxChanged(todo, event) {
+
+    console.log( todo );
+    console.log( event );
+
+    todo.completed = event.target.checked;
+    db.put(todo).then(console.log('Registro Actualizado!!!...'));
+
   }
 
   // User pressed the delete button for a todo, delete it
+  // Borrar registro
   function deleteButtonPressed(todo) {
+    db.remove(todo);
   }
 
   // The input box when editing a todo has blurred, we should save
   // the new title or delete the todo if the title is empty
+  // Acutalizar el todo, para ello se hace doble click en el item y cuando termine de editarlo y le de enter
+  // por ejemplo nos va a actualizar el registro
   function todoBlurred(todo, event) {
+
+    console.log('Entro en la fucnión');
+
+    var trimmedText = event.target.value.trim(); // Verifica que haya información dentro del campo de texto
+    if (!trimmedText) {
+      // Si no hay campo lo borra
+      db.remove(todo);
+    } else {
+      // Caso contrario actualiza el titulo y manda el put a la DB
+      todo.title = trimmedText;
+      db.put(todo);
+    }
+
   }
 
   // Initialise a sync with the remote server
