@@ -8,11 +8,32 @@
 
   // EDITING STARTS HERE (you dont need to edit anything above this line)
 
-  var db = false;
+  // Creamos la base de datos
+  var db = new PouchDB('todos');
   var remoteCouch = false;
 
   // We have to create a new todo document and enter it in the database
+  // Escribir en la base de datos
   function addTodo(text) {
+
+    var todo = {
+      _id: new Date().toISOString(),
+      title: text,
+      completed: false
+    };
+    // Inserción con callback
+    /*
+    db.put(todo, function callback(err, result) {
+      if (!err) {
+        console.log('Successfully posted a todo!');
+      }
+    });
+    */
+   // Inserción con promesa
+   db.put( todo )
+      .then( console.log('Insertado!!!...') )
+              .catch( console.log )
+
   }
 
   // Show the current list of todos by reading them from the database
