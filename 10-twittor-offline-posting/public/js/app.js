@@ -143,3 +143,26 @@ postBtn.on('click', function() {
     crearMensajeHTML( mensaje, usuario );
 
 });
+
+// Creamos nuevas funciones
+// Obtener mensajes del servidor, es decir, vamos a consumir el servicio REST
+function getMensajes(){
+
+    fetch('api')
+        .then(res => res.json() )
+        .then( posts => {
+
+            console.log(posts);
+            // Ahora para renderizar y mostra los mensajes existe una función que se llama
+            // crearMensajeHTML, entonces recorremos los mensajes y llamamos la función mencionada.
+            posts.forEach( post => {
+                crearMensajeHTML(post.mensaje, post.user);
+            });
+
+        });
+
+}
+
+// Llamanos la función después de ser declarada porque cuando el archivo app.js sea leido
+// va a definir la funición y necesito que la ejecute inmediatamente  para que cargue los mensajes
+getMensajes();

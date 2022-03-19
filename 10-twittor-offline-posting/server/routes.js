@@ -15,7 +15,7 @@ const mensajes = [
   },
   {
     _id: '002',
-    user: 'Iron Man',
+    user: 'IronMan',
     mensaje: 'Les habla Iron Man desde su nuevo Mark 50.'
   },
   {
