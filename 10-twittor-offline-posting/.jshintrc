@@ -74,6 +74,7 @@
         "caches"   : true,
         "require"  : true,
         "module"   : true,
-        "process"  : true
+        "process"  : true,
+        "$"        : true
     }
 }
