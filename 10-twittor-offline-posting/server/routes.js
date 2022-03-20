@@ -44,7 +44,25 @@ router.get('/', function (req, res) {
   res.json( mensajes );
 });
 
+// Post mensajes
+// Ahora creamos un servicio que nos permita realizar una petición POST
+// para el posteo de los mensajes
+router.post('/', function (req, res) {
 
+  // Ahora para esto vamos a usar la dependencia de body parser que se instalo con el comando npm install body-parser --save
+  // y con las lineas de codigo que se argregaron en el archivo server.js
+  const mensaje = {
+    mensaje: req.body.mensaje,
+    user: req.body.user
+  };
+
+  mensajes.push( mensaje );
+
+  res.json({
+    ok: true,
+    mensaje // Acá se puede hacer mensaje: mensaje pero en Ecmascript 6 ya es redundante
+  });
+});
 
 
 module.exports = router;

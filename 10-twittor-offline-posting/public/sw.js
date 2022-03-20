@@ -76,26 +76,37 @@ self.addEventListener('activate', e => {
 
 self.addEventListener( 'fetch', e => {
 
+    // Hacemos cambios para que ahora se use la estrategia de network with cache fallback
+    // para las peticiones a nuestra API
+    let respuesta;
+    
+    if ( e.request.url.includes('/api') ){
 
-    const respuesta = caches.match( e.request ).then( res => {
+        // return respuesta????;
+        respuesta = manejoApiMensajes( DYNAMIC_CACHE, e.request );
 
-        if ( res ) {
-            
-            actualizaCacheStatico( STATIC_CACHE, e.request, APP_SHELL_INMUTABLE );
-            return res;
-        } else {
+    }
+    else{
 
-            return fetch( e.request ).then( newRes => {
+        respuesta = caches.match( e.request ).then( res => {
 
-                return actualizaCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
+            if ( res ) {
+                
+                actualizaCacheStatico( STATIC_CACHE, e.request, APP_SHELL_INMUTABLE );
+                return res;
+            } else {
+    
+                return fetch( e.request ).then( newRes => {
+    
+                    return actualizaCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
+    
+                });
+    
+            }
+    
+        });
 
-            });
-
-        }
-
-    });
-
-
+    }
 
     e.respondWith( respuesta );
 
