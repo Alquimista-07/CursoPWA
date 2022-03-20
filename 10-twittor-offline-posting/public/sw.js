@@ -1,4 +1,13 @@
 // imports
+// Imports necesarios para usar puchdb.
+//----------------------------------------------------------------------------------------
+importScripts('https://cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js');
+//NOTA: Agretamos el archivo sw-db.js antes del sw-utils.js porque van a haber funciones
+//      que van a ser necesarias en el sw-utils.js, si estuviera al revés pueden aparecer
+//      errores porque probablemente este haciend referencia a funciones que aún no se
+//      encuentren definidas
+importScripts('js/sw-db.js');
+//----------------------------------------------------------------------------------------
 importScripts('js/sw-utils.js');
 
 
@@ -27,7 +36,9 @@ const APP_SHELL_INMUTABLE = [
     //'https://use.fontawesome.com/releases/v5.3.1/css/all.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
     'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'
+    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js',
+    // Agregamos PuchDB al inmutable para que se almacene en dicho cache
+    'https://cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js'
 ];
 
 

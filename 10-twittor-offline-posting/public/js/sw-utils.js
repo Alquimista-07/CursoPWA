@@ -48,6 +48,14 @@ function manejoApiMensajes( cacheName, req ) {
     if( req.clone().method === 'POST' ){
 
         // POSTEO de un nuevo mensaje
+        // Interceptamos lo que me estan enviando y extraemos la información
+        req.clone().text().then( body => {
+
+            console.log( body );
+            const bodyObj = JSON.parse( body ); // Acá lo que hago es obtener el string que viene en formato de json y transformalo en un objeto json que puedo extraer con sus propiedades, adicionalmente otra ventaja es que podemos agregar propiedades al mismo
+            guardarMensaje( bodyObj );
+
+        });
 
         // Tengo en cuenta que luego debería guardar en el Indexedcb
 
