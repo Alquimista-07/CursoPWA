@@ -47,20 +47,31 @@ function manejoApiMensajes( cacheName, req ) {
     // nosotros tenemos que aplicar un tipo de estrategia especial
     if( req.clone().method === 'POST' ){
 
-        // POSTEO de un nuevo mensaje
-        // Interceptamos lo que me estan enviando y extraemos la información
-        req.clone().text().then( body => {
+        // Ahora para el tema de sincronización, como todos los navegadores web aún no soportan el syncmanagaer
+        // y el cual se puede validar en https://caniuse.com/?search=syncmanager nosotros debemos tenerlo en cuenta
+        // y validar si mi navegador web actualmente dispone de la funcionalidad ya que de otra manera no se pueden 
+        // realizar tareas asíncronas que nos van a permitir por ejemplo postear mensajes luego de recuperar conexión
+        // a internet
+        if ( self.registration.sync ){
 
-            console.log( body );
-            const bodyObj = JSON.parse( body ); // Acá lo que hago es obtener el string que viene en formato de json y transformalo en un objeto json que puedo extraer con sus propiedades, adicionalmente otra ventaja es que podemos agregar propiedades al mismo
-            guardarMensaje( bodyObj );
+            // POSTEO de un nuevo mensaje
+            // Interceptamos lo que me estan enviando y extraemos la información
+            return req.clone().text().then( body => {
 
-        });
+                console.log( body );
+                const bodyObj = JSON.parse( body ); // Acá lo que hago es obtener el string que viene en formato de json y transformalo en un objeto json que puedo extraer con sus propiedades, adicionalmente otra ventaja es que podemos agregar propiedades al mismo
+                return guardarMensaje( bodyObj );
 
-        // Tengo en cuenta que luego debería guardar en el Indexedcb
+            });
 
-        // De momento solo dejamos pasar la petición
-        return fetch( req );
+        }
+        else{
+
+            // Si no soporta las tareas asíncronas solo dejamos pasar la petición
+            return fetch( req );
+
+        }
+
 
     }
     else{

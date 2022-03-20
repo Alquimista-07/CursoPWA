@@ -13,7 +13,20 @@ function guardarMensaje( mensaje ){
     mensaje._id = new Date().toISOString();
 
     // Ahora lo tengo que grabar en el indexeddb
-    db.put( mensaje ).then( () => {
+    return db.put( mensaje ).then( () => {
+
+        // Una vez lo tengamos registrado en nuestra DB local hacemos lo siguiente:
+        self.registration.sync.register('nuevo-post');
+
+        // Una vez la tares nuevo-post es registrada voy a crearme una respuesta ficticia
+        // y la cual se la vamos a enviar a frontend
+        const newResp = {
+            ok: true,
+            offline: true
+        };
+        
+        // Ahora voy a retornarle la información al frontend
+        return new Response( JSON.stringify( newResp ) );
 
         console.log('Se grabo en base de datos local(Indexeddb) para posterior posteo');
     

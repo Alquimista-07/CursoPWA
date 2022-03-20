@@ -123,4 +123,21 @@ self.addEventListener( 'fetch', e => {
 
 });
 
+// Registramos las tareas asíncronas
+self.addEventListener('sync', e => {
+    
+    console.log('SW: Sync');
 
+    // Pueda ser que tengamos varias acciones asíncronas y queramos darle un tratamiento independiente
+    // a cada una, y lo podríamos manejar con un switch pero para este caso como es un solo evento lo manejamos
+    // con un if en el cual leemos la tarea registrada mediante el tag con el que se registro la tarea, que para el caso
+    // si miramos en nuestro archivo sw-db.js el tag que colocamos fue 'nuevo-post'
+    if( e.tag === 'nuevo-post'){
+        
+        // Postear a DB cuando hay conexión a internet
+
+        // e.waitUntil( ??? );
+
+    }
+
+});
