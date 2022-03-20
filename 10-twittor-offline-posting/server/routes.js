@@ -58,6 +58,8 @@ router.post('/', function (req, res) {
 
   mensajes.push( mensaje );
 
+  console.log( mensajes );
+
   res.json({
     ok: true,
     mensaje // Acá se puede hacer mensaje: mensaje pero en Ecmascript 6 ya es redundante

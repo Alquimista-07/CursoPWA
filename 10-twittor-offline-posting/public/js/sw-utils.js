@@ -43,20 +43,37 @@ function actualizaCacheStatico( staticCache, req, APP_SHELL_INMUTABLE ) {
 // Network with cache fallback / update
 function manejoApiMensajes( cacheName, req ) {
 
-    // Lo primero que hacemos es intentar traer los datos más actualizados
-    return fetch( req ).then( res => {
+    // Como el cache ne maneja la petición POST, y nos da error al enviar el mensaje desde la aplicación web, 
+    // nosotros tenemos que aplicar un tipo de estrategia especial
+    if( req.clone().method === 'POST' ){
 
-        if( res.ok ){
-            actualizaCacheDinamico( cacheName, req, res.clone() );
-            return res.clone();
-        }
-        else{
+        // POSTEO de un nuevo mensaje
+
+        // Tengo en cuenta que luego debería guardar en el Indexedcb
+
+        // De momento solo dejamos pasar la petición
+        return fetch( req );
+
+    }
+    else{
+
+        // Lo primero que hacemos es intentar traer los datos más actualizados
+        return fetch( req ).then( res => {
+
+            if( res.ok ){
+                actualizaCacheDinamico( cacheName, req, res.clone() );
+                return res.clone();
+            }
+            else{
+                return caches.match( req );
+            }
+
+        }).catch( err => {
+            console.log(err);
             return caches.match( req );
-        }
+        });
 
-    }).catch( err => {
-        console.log(err);
-        return caches.match( req );
-    });
+    }
+
 
 }
