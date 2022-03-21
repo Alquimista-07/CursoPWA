@@ -219,3 +219,60 @@ window.addEventListener('offline', isOnline );
 
 isOnline();
 
+// Notificaciones
+
+// Vamos a crear unas funciones para pedirle al usuario que me de acceso a enviarle -> notificame()
+// y para personalizar la notificación -> enviarNotificacion()
+function enviarNotificacion(){
+
+    const notificationOpt = {
+        body: 'Este es el cuerpo de la notificación',
+        icon: 'img/icons/icon-72x72.png'
+    }
+
+    const notif = new Notification('Hola Mundo', notificationOpt);
+
+    notif.onclick = () => {
+        console.log('Click');
+    };
+
+}
+
+function notificame(){
+
+    // Verificamos si el navegador soporta notificaciones
+    if ( !window.Notification ){
+        console.log('Este navegador no soporta notificaciones');
+        return;
+    }
+
+    // La clase notification tiene 3 estados: default, denied y granted
+    // Por lo tanto acá lo que quiero es una confirmación si ya se le ha 
+    // otorgado el derecho granted, es decir, si ya anteriormente le habiamos
+    // preguntado al usuario si deseaba recibir notificaciones 
+    if ( Notification.permission === 'granted' ){
+
+        //new Notification('Hola Mundo!!!... - granted');
+        enviarNotificacion();
+
+    }
+    else if( Notification.permission !== 'denied' || Notification.permission === 'default'){
+
+        // Realizamos la solicitud al usuario
+        Notification.requestPermission( function( permission ) {
+
+            console.log(permission);
+
+            if(permission === 'granted'){
+                //new Notification('Hola Mundo!!!... - pregunta');
+                enviarNotificacion();
+            }
+
+        });
+
+    }
+
+}
+
+// Llamamos la función que se creo para las notificaciones
+notificame();
