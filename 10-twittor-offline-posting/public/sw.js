@@ -135,8 +135,9 @@ self.addEventListener('sync', e => {
     if( e.tag === 'nuevo-post'){
         
         // Postear a DB cuando hay conexión a internet
+        const respuesta = postearMensajes();
 
-        // e.waitUntil( ??? );
+        e.waitUntil( respuesta );
 
     }
 
