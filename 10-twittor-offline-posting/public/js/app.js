@@ -198,7 +198,7 @@ function isOnline(){
             interactionTimeout: 1000,
             actionText: 'OK!',
             type: 'info'
-        })
+        });
 
     }
     else{
@@ -210,7 +210,7 @@ function isOnline(){
             interaction: true,
             actionText: 'OK!',
             type: 'warning'
-        })
+        });
 
     }
 
