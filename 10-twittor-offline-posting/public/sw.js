@@ -27,7 +27,11 @@ const APP_SHELL = [
     'img/avatars/thor.jpg',
     'img/avatars/wolverine.jpg',
     'js/app.js',
-    'js/sw-utils.js'
+    'js/sw-utils.js',
+    // Incluimos en el cache las librerias para usar el Toast que nos muestra los mensajes de Online y Offline
+    'js/libs/plugins/mdtoast.min.css',
+    'js/libs/plugins/mdtoast.min.js'
+    
 ];
 
 const APP_SHELL_INMUTABLE = [

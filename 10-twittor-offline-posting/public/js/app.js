@@ -183,3 +183,43 @@ function getMensajes(){
 // Llamanos la función después de ser declarada porque cuando el archivo app.js sea leido
 // va a definir la funición y necesito que la ejecute inmediatamente  para que cargue los mensajes
 getMensajes();
+
+// Detectar cambios de conexión a internet
+function isOnline(){
+
+    if( navigator.onLine ){
+
+        // Tenemos conexión
+        console.log('Online');
+
+        // Usando JQuery usamos el Toast para mostrar los mensajes de Onlin y Offline en el 
+        $.mdtoast('Online', {
+            interaction: true,
+            interactionTimeout: 1000,
+            actionText: 'OK!',
+            type: 'info'
+        })
+
+    }
+    else{
+
+        // No tenemos conexión
+        console.log('Offline');
+        // Usando JQuery usamos el Toast para mostrar los mensajes de Onlin y Offline en el 
+        $.mdtoast('Offline', {
+            interaction: true,
+            actionText: 'OK!',
+            type: 'warning'
+        })
+
+    }
+
+}
+
+// Ahora nosotros debemos disparar la función isOnline() en algún momento
+// pero no es solo dispararla sino que es estár pendientes de la conexión,
+// que es lo más importante y para ello creamos unos listeners
+window.addEventListener('online', isOnline);
+window.addEventListener('offline', isOnline);
+
+isOnline();
