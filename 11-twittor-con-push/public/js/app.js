@@ -221,6 +221,29 @@ isOnline();
 
 // Notificaciones
 
+function verificaSuscripcion( activadas ){
+
+    // Aca lo que queremos hacer es validar si las notificaciones están activadas o desactivadas
+    // y cambiar las propiedades de los botones dependiendo de cada caso.
+    // NOTA: La clase oculto se encuentra en nuesto archivo css/style.css
+    if( activadas ){
+
+        btnActivadas.removeClass('oculto');
+        btnDesactivadas.addClass('oculto');
+
+    }
+    else{
+
+        btnActivadas.addClass('oculto');
+        btnDesactivadas.removeClass('oculto');
+
+    }
+
+}
+
+// Ojo de momento para dejar los botones de las notificaciones desactivados llamamos la función
+verificaSuscripcion();
+
 // Vamos a crear unas funciones para pedirle al usuario que me de acceso a enviarle -> notificame()
 // y para personalizar la notificación -> enviarNotificacion()
 function enviarNotificacion(){
@@ -275,4 +298,5 @@ function notificame(){
 }
 
 // Llamamos la función que se creo para las notificaciones
-notificame();
+//NOTA: Comentamos la función para que la notificación no se lance cuando abrimos la aplicación en el navegador
+// notificame();
