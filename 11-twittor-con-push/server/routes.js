@@ -60,7 +60,10 @@ router.get('/key', (req, res) => {
   // Retornamos la llave publica directamente al servicio rest solo para probar
   const key = push.getKey();
 
-  res.json( key );
+  // Lo unico que no ocupamos hacer es enviar la llave como un json ya que la requerimos como
+  // arrayBuffer, por lo tanto comentamos la siguiente linea y la cambiamos con un send
+  //res.json( key );
+  res.send( key );
 
 }); 
 

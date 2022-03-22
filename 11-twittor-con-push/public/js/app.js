@@ -300,3 +300,24 @@ function notificame(){
 // Llamamos la función que se creo para las notificaciones
 //NOTA: Comentamos la función para que la notificación no se lance cuando abrimos la aplicación en el navegador
 // notificame();
+
+// Luego de encriptarla tenemos que tomarla y prepararla en el frontend para crear nuestra subscripción
+// Get Key
+function getPublicKey(){
+
+    // Probamos si obtenemos la llave publica, pero no es como la necesito,
+    // por lo tanto esta comentado este codigo
+    /*
+    fetch('api/key')
+        .then( resp => resp.text())
+        .then( console.log );
+    */
+
+    return fetch('api/key')
+        .then( res => res.arrayBuffer() )
+        // retornar arreglo, pero como un Uint8array
+        .then( key => new Uint8Array(key) )
+
+}
+
+getPublicKey().then( console.log );

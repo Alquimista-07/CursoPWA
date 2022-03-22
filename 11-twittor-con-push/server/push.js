@@ -13,7 +13,10 @@
 //--------------------------------------------------------------------------------------
 
 const vapid = require('./vapid.json');
+// Ahora vamos a usar el packete de node URL Safe Base64 para retornar nuestra llave de forma segura codificada
+// para ello instalamos el paquete usando el comando npm install urlsafe-base64 y lo requerimos
+const urlsafeBase64 = require('urlsafe-base64');
 
 module.exports.getKey = () => {
-    return vapid.publicKey;
+    return urlsafeBase64.decode( vapid.publicKey );
 };
