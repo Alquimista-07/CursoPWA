@@ -2,6 +2,8 @@
 var url = window.location.href;
 var swLocation = '/twittor/sw.js';
 
+var swReg;
+
 
 if ( navigator.serviceWorker ) {
 
@@ -10,8 +12,21 @@ if ( navigator.serviceWorker ) {
         swLocation = '/sw.js';
     }
 
+    // Optimizamos para que el registro del SW se haga hasta que el navegador cargue en su totalidad
+    // todo lo que es la aplicación.
+    window.addEventListener('load', function() {
 
-    navigator.serviceWorker.register( swLocation );
+        navigator.serviceWorker.register( swLocation ).then( function (reg){
+
+            swReg = reg;
+            
+            // Una vez cargue quiero confirmar si ya estoy suscrito a las notificaciones o no
+            swReg.pushManager.getSubscription().then( verificaSuscripcion ); // Llamamos la función verificaSuscripcion sin los () porque quiero que ejecute la función inmediatamente
+
+        });
+
+    });
+
 }
 
 
@@ -242,7 +257,7 @@ function verificaSuscripcion( activadas ){
 }
 
 // Ojo de momento para dejar los botones de las notificaciones desactivados llamamos la función
-verificaSuscripcion();
+//verificaSuscripcion(); // Quitamos el llamado a esta función ya que la estamos llamando al momento de cargar el SW con la optimización del event listener load
 
 // Vamos a crear unas funciones para pedirle al usuario que me de acceso a enviarle -> notificame()
 // y para personalizar la notificación -> enviarNotificacion()
@@ -320,4 +335,38 @@ function getPublicKey(){
 
 }
 
-getPublicKey().then( console.log );
+// Comentamos esta línea porque ya no la necesito
+//getPublicKey().then( console.log ); 
+
+// Necesito realizar la subscripción cuando haga click sobre el botón
+// por lo tanto vamos a programar el evento click del botoón
+btnDesactivadas.on('click', function() {
+
+    // Validamos si existe el registro del SW, aunque con la lógica implementada en el event listener load
+    // al momento de registrar el SW el botón no va a aparecer hasta que el SW este registrado, pero
+    // no esta de más hacerlo
+    if( !swReg ) return console.log('No hay registro de SW');
+
+    // Pero si existe hacemos lo siguiente
+    getPublicKey().then( function( key ) {
+
+        swReg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: key
+        })
+        .then( res => res.toJSON() )
+        .then( suscripcion => {
+
+            console.log(suscripcion);
+            
+            // Le enviamos la suscripcion a la función ya que cabe aclarar que la función hace una validación
+            // en la cual si recibe undefined o null coloca unas propiedades a los botones y en caso de recibir otra
+            // cosa, como por ejemplo en este caso la llave publica de la suscripción cambia las propiedades 
+            // de los botones de otra forma.
+            verificaSuscripcion(suscripcion);
+
+        });
+
+    });
+
+});
