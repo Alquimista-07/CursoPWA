@@ -10,3 +10,5 @@ node_modules/
 *.iml
 *.pem
 *.zip
+
+11-twittor-con-push/server/vapid.json
