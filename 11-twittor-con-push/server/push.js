@@ -25,6 +25,8 @@ const fs = require('fs');
 //const suscripciones = [];
 // Ahora lo que debería hacer es que cuando recargue el navegador web mantenga las subscripciones, es decir,
 // deberia tener en mi arreglo todas las subsripciones, es decir leer el contenido del archivo subs-db.json
+// NOTA: Ojo si al ejecutar el proyecto arroja el error que no puede encontrar el modulo subs-db.json lo que debemos hacer es
+//       crear el archivo en la carpeta server y agregarlo como un arreglo json vacío es decir dentro del archivo colocamos [] y listo
 const suscripciones = require('./subs-db.json');
 
 module.exports.getKey = () => {

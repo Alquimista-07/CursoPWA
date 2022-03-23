@@ -238,7 +238,7 @@ isOnline();
 
 function verificaSuscripcion( activadas ){
 
-    console.log( activadas );
+    //console.log( activadas );
 
     // Aca lo que queremos hacer es validar si las notificaciones están activadas o desactivadas
     // y cambiar las propiedades de los botones dependiendo de cada caso.
@@ -370,7 +370,7 @@ btnDesactivadas.on('click', function() {
                 body: JSON.stringify( suscripcion )
             })
             .then( verificaSuscripcion )
-            .catch( console.log );
+            .catch( cancelarSuscripcion );
             
             // Le enviamos la suscripcion a la función ya que cabe aclarar que la función hace una validación
             // en la cual si recibe undefined o null coloca unas propiedades a los botones y en caso de recibir otra
@@ -381,5 +381,24 @@ btnDesactivadas.on('click', function() {
         });
 
     });
+
+});
+
+// Función para cancelar la suscripcipon desde el Front-end
+function cancelarSuscripcion(){
+
+    swReg.pushManager.getSubscription().then( subs => {
+        
+        subs.unsubscribe().then( () => verificaSuscripcion( false ) );
+
+    });
+
+}
+
+// Agregamos la accion al botón para cancelar la subscripción
+btnActivadas.on( 'click', function() {
+
+    // Llamamos la función para cancelar la subscripicón
+    cancelarSuscripcion();
 
 });
