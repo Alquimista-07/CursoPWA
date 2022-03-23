@@ -17,8 +17,15 @@ const vapid = require('./vapid.json');
 // para ello instalamos el paquete usando el comando npm install urlsafe-base64 y lo requerimos
 const urlsafeBase64 = require('urlsafe-base64');
 
+// Usamos un paquete de node que nos va a ayudar a almacenar nuestras subscripciones en un archivo
+// para evitar perderlas cuando el servidor por algún motivo se reinicie.
+const fs = require('fs');
+
 // Creamos un arreglo para almacenar las suscripciones
-const suscripciones = [];
+//const suscripciones = [];
+// Ahora lo que debería hacer es que cuando recargue el navegador web mantenga las subscripciones, es decir,
+// deberia tener en mi arreglo todas las subsripciones, es decir leer el contenido del archivo subs-db.json
+const suscripciones = require('./subs-db.json');
 
 module.exports.getKey = () => {
     return urlsafeBase64.decode( vapid.publicKey );
@@ -29,6 +36,9 @@ module.exports.addSubscription = ( suscripcion ) => {
 
     suscripciones.push( suscripcion );
     
-    console.log( suscripciones );
+    //console.log( suscripciones );
+
+    // NOTA: Esto de guardar las subscripciones también las podríasmos almacenar en una DB y no en un archivo plano como en el ejemplo del curso
+    fs.writeFileSync( `${ __dirname }/subs-db.json`, JSON.stringify( suscripciones ) );
 
 }
