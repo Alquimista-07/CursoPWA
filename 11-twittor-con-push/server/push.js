@@ -17,6 +17,18 @@ const vapid = require('./vapid.json');
 // para ello instalamos el paquete usando el comando npm install urlsafe-base64 y lo requerimos
 const urlsafeBase64 = require('urlsafe-base64');
 
+// Creamos un arreglo para almacenar las suscripciones
+const suscripciones = [];
+
 module.exports.getKey = () => {
     return urlsafeBase64.decode( vapid.publicKey );
 };
+
+// Modulo para agregar y almacenar las subscripciones a un arreglo
+module.exports.addSubscription = ( suscripcion ) => {
+
+    suscripciones.push( suscripcion );
+    
+    console.log( suscripciones );
+
+}

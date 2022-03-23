@@ -238,6 +238,8 @@ isOnline();
 
 function verificaSuscripcion( activadas ){
 
+    console.log( activadas );
+
     // Aca lo que queremos hacer es validar si las notificaciones están activadas o desactivadas
     // y cambiar las propiedades de los botones dependiendo de cada caso.
     // NOTA: La clase oculto se encuentra en nuesto archivo css/style.css
@@ -357,13 +359,24 @@ btnDesactivadas.on('click', function() {
         .then( res => res.toJSON() )
         .then( suscripcion => {
 
-            console.log(suscripcion);
+            //console.log(suscripcion);
+
+            // Hacemos el posteo de la subscripcion
+            fetch('api/subscribe', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify( suscripcion )
+            })
+            .then( verificaSuscripcion )
+            .catch( console.log );
             
             // Le enviamos la suscripcion a la función ya que cabe aclarar que la función hace una validación
             // en la cual si recibe undefined o null coloca unas propiedades a los botones y en caso de recibir otra
             // cosa, como por ejemplo en este caso la llave publica de la suscripción cambia las propiedades 
             // de los botones de otra forma.
-            verificaSuscripcion(suscripcion);
+            //verificaSuscripcion(suscripcion); // Comentamos esta línea ya que la estoy llamando en la promesa en el fetch del post
 
         });
 
