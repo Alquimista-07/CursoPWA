@@ -83,7 +83,16 @@ router.get('/key', (req, res) => {
 //        servicio que este expuesto ya que sería algo que solo corra nuestro backend
 router.post('/push', (req, res) => {
 
-  res.json('push');
+  // Cuando llame el servicio push voy a extraer la información que viene en el post
+  const notificacion = {
+    titulo: req.body.titulo,
+    cuerpo: req.body.cuerpo,
+    usuario: req.body.usuario
+  };
+
+  push.sendPush( notificacion );
+
+  res.json( notificacion );
 
 }); 
 

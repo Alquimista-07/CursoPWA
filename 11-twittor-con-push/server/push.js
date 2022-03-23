@@ -13,6 +13,18 @@
 //--------------------------------------------------------------------------------------
 
 const vapid = require('./vapid.json');
+
+// Ahora para el tema en el cual nosotros vamos a configurar nuestro web push (Video:125. Configurar web-push),
+// vamos a hacer lo siguiente:
+const webpush = require('web-push'); // NOTA: Revisar documentación en: https://www.npmjs.com/package/web-push
+
+// Ahora nos pieden que configuremos nuestros VAPID Keys para ello hacemos lo siguiente:
+webpush.setVapidDetails(
+    'mailto:jdca.07@gmail.com',
+    vapid.publicKey,
+    vapid.privateKey
+);
+
 // Ahora vamos a usar el packete de node URL Safe Base64 para retornar nuestra llave de forma segura codificada
 // para ello instalamos el paquete usando el comando npm install urlsafe-base64 y lo requerimos
 const urlsafeBase64 = require('urlsafe-base64');
@@ -43,4 +55,24 @@ module.exports.addSubscription = ( suscripcion ) => {
     // NOTA: Esto de guardar las subscripciones también las podríasmos almacenar en una DB y no en un archivo plano como en el ejemplo del curso
     fs.writeFileSync( `${ __dirname }/subs-db.json`, JSON.stringify( suscripciones ) );
 
-}
+};
+
+// Creamos un modulo para el envio de las notificaciones
+module.exports.sendPush = ( post ) => {
+
+    // NOTA: Ojo el post es la información que queremos mandar a través del push
+
+    // Ahora lo que quiero hacer acá es enviarle un mensaje a todas la subscripciones
+    // que tengo en mi arreglo de subscripciones
+    suscripciones.forEach( (suscripcion, i ) => {
+
+        // Acá adentro ya tengo la suscripción a la cual le puedo mandar una notificación push
+        // entonces para enviarla hacemos lo sugiente:
+        // El primer argumento: Es la suscripcion como tal, es la información del endpoint, los keys, auth, etc.
+        // El segundo argumento: Es el payload o la información en bruto que queremos enviar, pero no lo podemos enviar como un objeto
+        //                       hay que convertirlo en json
+        webpush.sendNotification( suscripcion,  post.titulo );
+
+    });
+
+};
