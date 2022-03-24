@@ -143,7 +143,7 @@ self.addEventListener('push', e => {
 
     const data = JSON.parse( e.data.text() );
 
-    console.log( data );
+    // console.log( data );
 
     const title = data.titulo;
     const options = {
@@ -153,9 +153,47 @@ self.addEventListener('push', e => {
         badge: 'img/favicon.ico', // Este es el icononito que vamos a ponerle para que se muenstre en la barra de notificaciones de dispositivos Android
         image: 'https://datainfox.com/wp-content/uploads/2017/10/avengers-tower.jpg', // También podemos colocar una imágen completa
         vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600], // Patron de vibración, para ver más patrones revisar la documentación en: https://gearside.com/custom-vibration-patterns-mobile-devices/         // NOTA: En el vibrate indica cuantas milesimas de segundo vibra, cuantas no, cuantas si y así sucesivamente
-        openURL: '/' // Direción que queremos que abra cuando recibimos la notificación, es decir, cuando hacemos click sobre ella
+        openURL: '/', // Direción que queremos que abra cuando recibimos la notificación, es decir, cuando hacemos click sobre ella
+        data: { // Esta es la data que va a ser contenida en la notificación
+            url: 'https://google.com', // Aca va url que quisieramos que viera el usuario, en este caso del ejemplo colocamos cualquier cosa
+            id: data.usuario
+        },
+        actions: [ // Podemos crear acciones personalizadas para que funcionen con la interación al tocar la notificación, por ejemplo eliminar, actualizar, etc y se pueden crear cuantas queramos pero no es aconsejable demasiadas, tal vez 3 máximo
+            {
+                action: 'thor-action',
+                title: 'Thor',
+                icon: 'img/avatar/thor.jpg'
+            },
+            {
+                action: 'ironman-action',
+                title: 'Ironman',
+                icon: 'img/avatar/ironman.jpg'
+            }
+        ]
     };
 
     e.waitUntil( self.registration.showNotification( title, options ) );
+
+});
+
+// NOTA: Hay 2 event listeners realacionados con las notificaciones, entonces para ello los vamos a agregar
+//
+// Cuando se cierra la notificación
+self.addEventListener('notificationclose', e =>{
+
+    console.log('Notificación cerada', e)
+
+});
+
+// Cuando se hace click en la notificación y es el más importante de todos y es el que más nos interesa porque es el más común que se usa
+self.addEventListener('notificationclick', e=> {
+
+    const notificacion = e.notification;
+    const accion = e.action;
+
+    console.log({ notificacion, accion });
+
+    // Cerramos la notificación
+    notificacion.close();
 
 });
