@@ -482,6 +482,34 @@ function mostrarMapaModal(lat, lng) {
 btnLocation.on('click', () => {
 
     console.log('Botón geolocalización');
+
+    // Colocamos un toast para hacerlo más visual
+    $.mdtoast('Cargando mapa...', {
+        interaction: true,
+        interactionTimeout: 2000,
+        actionText: 'Ok!'
+    });
+
+    // Para obtener la geolocalización usamos una característica que ya tienen los navegadores web
+    // para ello hacemos lo siguiente:
+    // NOTA: Para saber más sobre esta característica del navegador web, podemos visitar el siguiente  
+    //       enlace que contiene la documentación: https://web.dev/native-hardware-user-location/
+    if ( navigator.geolocation ) {
+
+        navigator.geolocation.getCurrentPosition ( pos => {
+
+            console.log( pos );
+            // Usamos la función mostrarMapaModal que inyecta codigo html y muestra un modal con el mapa
+            mostrarMapaModal( pos.coords.latitude, pos.coords.longitude ); // Estos parametros que pasamos a la función son atributos del objeto json los cuales los podemos ver con el console.log de pos
+            
+        }); 
+
+    }
+    else{
+
+        console.log('La geolocalización no esta disponible en este navegador web');
+    
+    }
     
 
 });
