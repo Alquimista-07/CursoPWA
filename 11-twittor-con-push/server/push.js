@@ -71,7 +71,7 @@ module.exports.sendPush = ( post ) => {
         // El primer argumento: Es la suscripcion como tal, es la información del endpoint, los keys, auth, etc.
         // El segundo argumento: Es el payload o la información en bruto que queremos enviar, pero no lo podemos enviar como un objeto
         //                       hay que convertirlo en json
-        webpush.sendNotification( suscripcion,  post.titulo );
+        webpush.sendNotification( suscripcion,  JSON.stringify( post ) );
 
     });
 

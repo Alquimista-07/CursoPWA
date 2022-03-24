@@ -139,11 +139,21 @@ self.addEventListener('sync', e => {
 self.addEventListener('push', e => {
 
     //console.log( e );
-    console.log( e.data.text() );
+    //.log( e.data.text() );
 
-    const title = e.data.text();
+    const data = JSON.parse( e.data.text() );
+
+    console.log( data );
+
+    const title = data.titulo;
     const options = {
-
+        body: data.cuerpo, // Cuerpo de la notificación
+        //icon: 'img/icons/icon-72x72.png' // Icono de la notificación
+        icon: `img/avatars/${ data.usuario }.jpg`, // Ajustamos para que al enviar la notificación aparezca la imagen del usuario que la esta enviando
+        badge: 'img/favicon.ico', // Este es el icononito que vamos a ponerle para que se muenstre en la barra de notificaciones de dispositivos Android
+        image: 'https://datainfox.com/wp-content/uploads/2017/10/avengers-tower.jpg', // También podemos colocar una imágen completa
+        vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600], // Patron de vibración, para ver más patrones revisar la documentación en: https://gearside.com/custom-vibration-patterns-mobile-devices/         // NOTA: En el vibrate indica cuantas milesimas de segundo vibra, cuantas no, cuantas si y así sucesivamente
+        openURL: '/' // Direción que queremos que abra cuando recibimos la notificación, es decir, cuando hacemos click sobre ella
     };
 
     e.waitUntil( self.registration.showNotification( title, options ) );
