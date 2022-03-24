@@ -39,7 +39,7 @@ const fs = require('fs');
 // deberia tener en mi arreglo todas las subsripciones, es decir leer el contenido del archivo subs-db.json
 // NOTA: Ojo si al ejecutar el proyecto arroja el error que no puede encontrar el modulo subs-db.json lo que debemos hacer es
 //       crear el archivo en la carpeta server y agregarlo como un arreglo json vacío es decir dentro del archivo colocamos [] y listo
-const suscripciones = require('./subs-db.json');
+let suscripciones = require('./subs-db.json');
 
 module.exports.getKey = () => {
     return urlsafeBase64.decode( vapid.publicKey );
@@ -60,6 +60,12 @@ module.exports.addSubscription = ( suscripcion ) => {
 // Creamos un modulo para el envio de las notificaciones
 module.exports.sendPush = ( post ) => {
 
+    console.log('Mandando PUSHES');
+
+    // El envío de las notificaciones es muy rápido para ello voy a esperar que la promesa /(suscripciones.forEach...) que me recorre las suscripciones termine.
+    // Para ello lo mentemos en un arreglo para guardar la promesa de las notificaciones
+    const notificacionesEnvadas = [];
+
     // NOTA: Ojo el post es la información que queremos mandar a través del push
 
     // Ahora lo que quiero hacer acá es enviarle un mensaje a todas la subscripciones
@@ -71,8 +77,32 @@ module.exports.sendPush = ( post ) => {
         // El primer argumento: Es la suscripcion como tal, es la información del endpoint, los keys, auth, etc.
         // El segundo argumento: Es el payload o la información en bruto que queremos enviar, pero no lo podemos enviar como un objeto
         //                       hay que convertirlo en json
-        webpush.sendNotification( suscripcion,  JSON.stringify( post ) );
+        //
+        // NOTA: Ahora para el tema para eliminar las notificaciones que ya no son vijentes ajustamos un poco el siguiente código para convertirlo en una promesa
+        //webpush.sendNotification( suscripcion,  JSON.stringify( post ) );
+        const pushProm = webpush.sendNotification( suscripcion,  JSON.stringify( post ) )
+            .then( console.log('Notificación enviada') )
+            .catch( err => {
+                console.log('Notificación falló');
+                //Ahora yo se que el código del error para saber que algo ya no existe es 410 entonces hacemos lo siguiente:
+                if( err.statusCode === 410 ){ // GONE, ya no existe
+                    // Acá tenemos que borrar la suscripción y para ello lo que quiero hacer es marcar las notificaciones que quiero borrar
+                    // ya que si yo la borro inmediatamente mientras recorro en teoria me voy a saltar al siguiente registro del foreach y por eso las marcamos antes de borrarlas,
+                    // pero eso no indica que yo no las pueda borrar mientras recorro pero lo mejor seria marcarlas primero y luego borrarlas en cascada
+                    suscripciones[i].borrar = true; // le agregamos una nueva propiedad llamada borrar
+                }
+            });
 
+            notificacionesEnvadas.push( pushProm );
+
+    });
+
+    // Ahora para borrarlas hacemos lo siguiente:
+    Promise.all( notificacionesEnvadas ).then( () => {
+        // Borramos todas las suscripciones que tengan la bandera borrar en true
+        suscripciones = suscripciones.filter( subs => !subs.borrar ); // Dejamos solo las que no estan borradas
+        // Luego actualizamos la base de datos o reescribimos el archivo en el caso del ejemplo
+        fs.writeFileSync( `${ __dirname }/subs-db.json`, JSON.stringify( suscripciones ) );
     });
 
 };
