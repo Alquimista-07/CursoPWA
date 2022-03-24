@@ -34,12 +34,22 @@ router.post('/', function (req, res) {
   mensajes.push( mensaje );
 
   console.log(mensajes);
+  // Si quisieramos enviar una notificación cada vez que se envie un nuevo mensaje solo llamamos la función sendPush con los paramtros necesarios del post
+  // Por ejemplo:
+  const postMensaje = {
+    titulo: req.body.user,
+    cuerpo: req.body.mensaje,
+    usuario: req.body.user
+  };
 
+  push.sendPush( postMensaje );
 
-  res.json({
-    ok: true,
-    mensaje
-  });
+  res.json( postMensaje );
+
+//  res.json({
+//    ok: true,
+//    mensaje
+//  });
 });
 
 // Empezamos con las configuraciones que vamos a necesitar en nuestro backend para hacer toda la suscripci´n

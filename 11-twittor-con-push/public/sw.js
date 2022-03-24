@@ -150,24 +150,25 @@ self.addEventListener('push', e => {
         body: data.cuerpo, // Cuerpo de la notificación
         //icon: 'img/icons/icon-72x72.png' // Icono de la notificación
         icon: `img/avatars/${ data.usuario }.jpg`, // Ajustamos para que al enviar la notificación aparezca la imagen del usuario que la esta enviando
-        badge: 'img/favicon.ico', // Este es el icononito que vamos a ponerle para que se muenstre en la barra de notificaciones de dispositivos Android
+        badge: 'img/favicon.ico', // Este es el icononito que vamos a ponerle para que se muenstre en la barra de notificaciones de dispositivos Android. NOTA: Lo recomendado es usar path absolutos (https://misitio.com/...) y no relativos ya que hay veces en las cuales no aparece la imágen
         image: 'https://datainfox.com/wp-content/uploads/2017/10/avengers-tower.jpg', // También podemos colocar una imágen completa
         vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600], // Patron de vibración, para ver más patrones revisar la documentación en: https://gearside.com/custom-vibration-patterns-mobile-devices/         // NOTA: En el vibrate indica cuantas milesimas de segundo vibra, cuantas no, cuantas si y así sucesivamente
         openURL: '/', // Direción que queremos que abra cuando recibimos la notificación, es decir, cuando hacemos click sobre ella
         data: { // Esta es la data que va a ser contenida en la notificación
-            url: 'https://google.com', // Aca va url que quisieramos que viera el usuario, en este caso del ejemplo colocamos cualquier cosa
+            //url: 'https://google.com', // Aca va url que quisieramos que viera el usuario, en este caso del ejemplo colocamos cualquier cosa
+            url: '/', // Cambiamos la url para que al redirigir me mande a mi aplicación
             id: data.usuario
         },
         actions: [ // Podemos crear acciones personalizadas para que funcionen con la interación al tocar la notificación, por ejemplo eliminar, actualizar, etc y se pueden crear cuantas queramos pero no es aconsejable demasiadas, tal vez 3 máximo
             {
                 action: 'thor-action',
                 title: 'Thor',
-                icon: 'img/avatar/thor.jpg'
+                icon: 'img/avatar/thor.jpg' // NOTA: Lo recomendado es usar path absolutos (https://misitio.com/...) y no relativos ya que hay veces en las cuales no aparece la imágen
             },
             {
                 action: 'ironman-action',
                 title: 'Ironman',
-                icon: 'img/avatar/ironman.jpg'
+                icon: 'img/avatar/ironman.jpg' // NOTA: Lo recomendado es usar path absolutos (https://misitio.com/...) y no relativos ya que hay veces en las cuales no aparece la imágen
             }
         ]
     };
@@ -193,7 +194,32 @@ self.addEventListener('notificationclick', e=> {
 
     console.log({ notificacion, accion });
 
-    // Cerramos la notificación
-    notificacion.close();
+    // Vamos a validar si la apicación esta abierta en un tab y si no que la abra esto es con el fin de que si ya tengo la aplcación abierta evitar que cada vez que toque la notificación me abra un tab nuevo si no que me redireccione.
+    // Entonces para ello agarramos todos los tabs que estén en el mismo sitio y para ello creamos un arreglo de todos los tabs que tengo y lo llamo clientes(Que son los tabs de nuestra aplicación)
+    const respuesta = clients.matchAll()
+        .then( clientes => {
+
+            // Movemos el tab que esta visible
+            let cliente = clientes.find( c => {
+                return c.visibilityState === 'visible';
+            });
+
+            if ( cliente !== undefined ){
+                // Navegamos a la pantalla que quiero
+                cliente.navigate( notificacion.data.url );
+                cliente.focus(); // Esto es para que ese sea el tab activo
+            }
+            else{
+                // No tengo ninguna pestaña abierta o activa
+                // Hacemos referencia a los tabs abiertos y redirigimos desde la notificación al tocarla
+                clients.openWindow( notificacion.data.url ); // Acá mandamos la url que se definio en el objeto data en las ocpiones de la notificación
+            }
+
+            // Cerramos la notificación
+            return notificacion.close();
+
+        });
+
+        e.waitUntil( respuesta );
 
 });
