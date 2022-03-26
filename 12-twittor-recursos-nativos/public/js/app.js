@@ -76,7 +76,16 @@ var foto = null;
 // El usuario, contiene el ID del héroe seleccionado
 var usuario;
 
-
+// Cramos una nueva instancia de la clase cámara
+// Init de la camara-class
+// NOTA: Para obtener el argumento videoNode sin usar JQuery lo podemos hacer de la sigiente forma
+//       y hacemos referencia al id player del contenedor del video
+//
+//       document.getElementById('player');
+//
+//       Pero si queremos usar JQuery le diriamos qu busque por id (Para eso colocamos el #), el cual
+//       en JQuery regresa un arreglo y obtenemos la primera posicion como se muestra a continuación:
+const camara = new Camara( $('#player')[0] );
 
 // ===== Codigo de la aplicación
 
@@ -523,6 +532,10 @@ btnLocation.on('click', () => {
 btnPhoto.on('click', () => {
 
     console.log('Inicializar camara');
+    contenedorCamara.removeClass('oculto'); // Quitamos la clase oculto del html para que muestre el cuadro de la cámara
+
+    // Usamos el metodo para encender la cámara
+    camara.encender();
 
 });
 
