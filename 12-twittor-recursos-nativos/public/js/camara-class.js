@@ -1,6 +1,13 @@
 // Clase que contiene la lógica para inicializar la cámara
 // Usando Ecmacscript 6
 
+// NOTA: Documentación MDN - Media Devices
+//       Este artículo de MDN, les ayudará a tener mejor control de la cámara en sí.
+//
+//       Media Devices -> https://developer.mozilla.org/es/docs/Web/API/MediaDevices/getUserMedia
+//
+//       También incluye cómo utilizar por defecto la cámara posterior.
+
 class Camara {
 
     // Cuando se crea una nueva instancia de la cámara
