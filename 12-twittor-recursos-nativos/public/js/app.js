@@ -95,6 +95,8 @@ function crearMensajeHTML(mensaje, personaje, lat, lng, foto) {
 
     var content =`
     <li class="animated fadeIn fast"
+        data-user="${ personaje }"
+        data-mensaje="${ mensaje }"
         data-tipo="mensaje">
 
 
@@ -555,7 +557,62 @@ btnTomarFoto.on('click', () => {
 });
 
 
-// Share API
+// Share API: Basicamente esta funcionalidad es la que nos abre el cuadro con el cual podemos compartir 
+//            la información en redes sociales, y demás aplicaciones.
+//            Para más información como soporte y demás podemos revisar los siguientes enlaces:
+//
+//            Revisar soporte con CanIUse -> https://caniuse.com/?search=share
+//            Documentación               -> https://web.dev/web-share/
+//
 
+// Validamos si el navegador soporta el Share API
+if( navigator.share ){
 
+    console.log('Navegador web lo soporta');
+    // Necesito que al tocar una de las burbujas (foto usuario) compartamos su mensaje
+    // y el usuario que lo hizo, para ello usamos un función de JQuery para saber en que
+    // elemento hice click, es decir a que mensaje posteado le hice click
+    timeline.on('click', 'li', function() {
 
+        console.log('Click en li');
+        console.log( $(this) ); // Esto nos muestra todo el nodo (elemento) en consola
+        
+        // Lo que ahora se debe hacer es extraer la propiedad data-user="${ personaje }"y data-mensaje="${ mensaje }" que agregamos al elemento mensaje
+        // en la función crearMensajeHTML
+        console.log( $(this).data('tipo') ); // Lo mostramos en consola para ver el comportamiento
+        console.log( $(this).data('user') ); // Lo mostramos en consola para ver el comportamiento
+
+        // Extraemos y asignamso a una variable cada propiedad
+        let tipo    = $(this).data('tipo');
+        let lat     = $(this).data('lat');
+        let lng     = $(this).data('lng');
+        let mensaje = $(this).data('mensaje');
+        let user    = $(this).data('user');
+
+        // Nos aseguramos de que todas las propiedades existan
+        console.log( { tipo, lat, lng, mensaje, user} );
+
+        // Opciones para compartir
+        const shareOpts = {
+            title: user,
+            text: mensaje
+        };
+
+        // Validamos si vamos a mandar un mapa para conformar la url
+        if( tipo === 'mapa'){
+            shareOpts.text = 'Mapa'
+            shareOpts.url = `https://www.google.com/maps/@${ lat },${ lng },15z` // Latitud, longitud y zoom
+        }
+
+        navigator.share( shareOpts )
+            .then( () => console.log('Compartir Exitoso'))
+            .catch( (err) => console.log('Error al compartir', err));
+
+    });
+
+}
+else{
+
+    console.log('Navegador web NO lo soporta');
+
+}
