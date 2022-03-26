@@ -43,6 +43,44 @@ class Camara {
     // Creamos un metodo para apagar la cámara
     apagar(){
 
+        // Para apagar podríamos cancelar el stream pero lo que sucede es que aún lo necesitamos
+        // por lo tanto lo que vamos a hacer es pausarlo
+        this.videoNode.pause();
+
+        if( this.stream){
+            // Detenemos el stream
+            this.stream.getTracks()[0].stop();
+        }
+
+    }
+
+    // Creamos un metodo para tomar la foto el cual basicamente va a ser igual siempre que queramos
+    // hacer esto
+    tomarFoto(){
+
+        // Crear un elemento canvas para renderizar ahí la foto
+        let canvas = document.createElement('canvas');
+
+        // Colocar las dimensiones del canvas igual al elemento del video
+        canvas.setAttribute('width', 300);
+        canvas.setAttribute('height', 300);
+
+        // Obtener el contexto del canvas
+        let context = canvas.getContext('2d'); // Una simple imágen
+
+        // Dibujamos o renderizamos la imágen
+        context.drawImage( this.videoNode, 0, 0, canvas.width, canvas.height );
+
+        // Estraemos la imágen
+        this.foto = context.canvas.toDataURL(); // Genera un stream en base 64 que puedo usar en cualquier src de una imágen
+
+        // Limpieza
+        canvas = null;
+        context = null;
+
+        // Regresamos la fotografía
+        return this.foto;
+
     }
 
 }

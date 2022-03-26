@@ -544,6 +544,12 @@ btnPhoto.on('click', () => {
 btnTomarFoto.on('click', () => {
 
     console.log('Botón tomar foto');
+
+    foto = camara.tomarFoto();
+    console.log( foto );
+
+    // Apagamos la cámara en el momento que tomamos la foto
+    camara.apagar();
     
 });
 
