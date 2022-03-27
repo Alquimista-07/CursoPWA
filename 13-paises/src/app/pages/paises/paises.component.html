@@ -3,7 +3,7 @@
 
 <ul class="list-group">
     <a [routerLink]="['/pais', pais.cca3]" class="list-group-item list-group-item-action animated fadeIn fast"
-        *ngFor="let pais of paises">
+        *ngFor="let pais of paises" ><img [src]="pais.flags.png" width="32" height="20" />
         {{ pais.name.common }}
     </a>
 </ul>

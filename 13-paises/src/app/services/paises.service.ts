@@ -12,7 +12,7 @@ export class PaisesService {
 
   constructor( private http: HttpClient ) { }
 
-  // Cremos un meotod para obtener los paises
+  // Cremos un meotodo para obtener los paises
   getPaises(): Promise<PaisInterface[]> {
 
     if( this.paises.length > 0 ){
@@ -31,6 +31,27 @@ export class PaisesService {
         });
 
     });
+
+  }
+
+  // Creamos un metodo para obtener paises por id
+  getPaisPorId( id: string ){
+
+    // Verifico si ya hay paises cargados
+    if( this.paises.length > 0 ){
+      // Hay paises en el arreglo, por consecuencia puedo obtener paises por id
+      const pais = this.paises.find( p => p.cca3 === id );
+      console.log("Pais: ", pais?.name.common);
+      return Promise.resolve( pais );
+    }
+
+      // Carga los paises y regresa una promesa
+      return this.getPaises().then( paises => {
+
+        const pais = this.paises.find( p => p.cca3 === id );
+        return Promise.resolve( pais );
+
+      });
 
   }
 
