@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppComponent } from './app.component';
 import { PaisComponent } from './pages/pais/pais.component';
 import { PaisesComponent } from './pages/paises/paises.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,12 @@ import { PaisesComponent } from './pages/paises/paises.component';
   imports: [
     BrowserModule,
     AppRoutingModule, // Importamos mi modulo de rutas
-    HttpClientModule // Importamos el modulo HttpClientModule para permitirnos las peiticiones http
+    HttpClientModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: environment.production,
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+}) // Importamos el modulo HttpClientModule para permitirnos las peiticiones http
   ],
   providers: [],
   bootstrap: [AppComponent]
